@@ -34,6 +34,7 @@ public class EduIdConfiguration extends AbstractRestConfiguration {
                 "username=" + getUsername() +
                 ", serviceAddress=" + getServiceAddress() +
                 ", authMethod=" + getAuthMethod() +
+                ", trustAllCertificates=" + getTrustAllCertificates() +
                 '}';
     }
 

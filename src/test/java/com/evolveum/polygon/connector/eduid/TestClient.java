@@ -40,8 +40,7 @@ public class TestClient {
     private static EduIdConfiguration conf;
     private static EduIdConnector conn;
 
-
-    private static /*final */String DOMAIN = "";
+    private static String DOMAIN = "";
     private static final String ID = "859379";
 
     ObjectClass affiliationObjectClass = new ObjectClass(EduIdConnector.AFFILIATION_OBJECT_CLASS);
@@ -79,6 +78,7 @@ public class TestClient {
     public void testSchema() {
         Schema schema = conn.schema();
         LOG.info("schema: " + schema);
+        // TODO: verify manually
     }
 
     @Test
@@ -89,31 +89,7 @@ public class TestClient {
         LOG.info("resp: {0}", response);
         String result = EntityUtils.toString(response.getEntity());
         LOG.info("content: {0}", result);
-    }
-
-    @Test
-    public void testCreateJson() throws IOException {
-        JSONObject jo = new JSONObject();
-        jo.put("schemas", getJsonArray("urn:mace:switch.ch:eduid:scim:1.0:affiliation"));
-        jo.put("id", ID);
-        jo.put("externalId", ID);
-        jo.put("swissEduID", "c4d52189-9c62-4f41-b2a1-d3b6ce07dc7e");
-        jo.put("swissEduPersonUniqueID", ID);
-        jo.put("email", getJsonArray("bsmith@example.com"));
-        jo.put("givenName", "Barbara");
-        jo.put("surname", "Smith");
-        jo.put("swissEduIDAffiliationStatus", "current");
-        jo.put("swissEduIDAffiliationPeriodBegin", "2018-01-01");
-        jo.put("eduPersonAffiliation", getJsonArray("student"));
-
-        LOG.info("json: {0}", jo.toString());
-        //throw new IOException("e");
-    }
-
-    private JSONArray getJsonArray(String value) {
-        JSONArray array = new JSONArray();
-        array.put(value);
-        return array;
+        // TODO: verify manually over GUI
     }
 
     @Test
@@ -142,12 +118,14 @@ public class TestClient {
 
         Uid userUid = conn.create(affiliationObjectClass, attributes, null);
         LOG.ok("New user Uid is: {0}, sent: {1}", userUid.getUidValue(), id);
+        // TODO: verify manually over GUI
     }
 
     @Test
     public void testDeleteUser() {
         Uid uid = new Uid(ID+DOMAIN);
         conn.delete(affiliationObjectClass, uid, null);
+        // TODO: verify manually over GUI
     }
     @Test
     public void testUpdateUser() {
@@ -176,6 +154,7 @@ public class TestClient {
         Uid uid = new Uid(id);
         Uid userUid = conn.update(affiliationObjectClass, uid, attributes, null);
         LOG.ok("User {0} updated", userUid.getUidValue());
+        // TODO: verify manually over GUI
     }
 
 
@@ -195,22 +174,7 @@ public class TestClient {
         LOG.ok("start finding: "+searchByUid.byUid);
         conn.executeQuery(affiliationObjectClass, searchByUid, rh, null);
         LOG.ok("end finding");
-    }
-
-
-    @Test
-    public void findAll() {
-        ResultsHandler rh = new ResultsHandler() {
-            @Override
-            public boolean handle(ConnectorObject connectorObject) {
-                LOG.ok("result {0}", connectorObject);
-                return true;
-            }
-        };
-
-        // all
-        EduIdFilter filter = new EduIdFilter();
-        conn.executeQuery(affiliationObjectClass, filter, rh, null);
+        // TODO: verify manually over GUI
     }
 
 }

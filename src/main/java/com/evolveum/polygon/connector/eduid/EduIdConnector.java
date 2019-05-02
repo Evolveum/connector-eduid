@@ -75,12 +75,12 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
     protected static final String[] REQUIRED_SINGLE_ATTRIBUTES = { ID, EXTERNAL_ID, GIVEN_NAME, SURNAME, SWISS_EDU_ID_AFFILIATION_STATUS,
             SWISS_EDU_ID_AFFILIATION_PERIOD_BEGIN, SWISS_EDU_PERSON_UNIQUE_ID, SWISS_EDU_ID};
     protected static final String[] REQUIRED_MULTI_ATTRIBUTES = {/* SCHEMAS, */EDU_PERSON_AFFILIATION, EMAIL};
-    // TODO meta.* tags if returned (not mentioned in samples
+    // TODO meta.* tags if returned - not mentioned in samples
 
     private static String CONTENT_TYPE = "application/scim+json";
     protected static String AFFILIATION_OBJECT_CLASS = "affiliation"; // ObjectClass.ACCOUNT_NAME
     protected static String AFFILIATIONS = "Affiliations";
-    private static String UID = "swissEduPersonUniqueID";
+    private static String UID = SWISS_EDU_PERSON_UNIQUE_ID;
 
     @Override
     public void test() {
@@ -333,7 +333,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         }
 
         for (String attribute : SINGLE_STRING_ATTRIBUTES){
-            putFieldIfExists(attributes, attribute, jo);
+            putStringIfExists(attributes, attribute, jo);
         }
         for (String attribute : MULTI_STRING_ATTRIBUTES){
             putStringArrayIfExists(attributes, attribute, jo);
@@ -363,7 +363,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
     }
 
 
-    private void putFieldIfExists(Set<Attribute> attributes, String fieldName, JSONObject jo) {
+    private void putStringIfExists(Set<Attribute> attributes, String fieldName, JSONObject jo) {
         String fieldValue = getStringAttr(attributes, fieldName);
         if (fieldValue != null) {
             jo.put(fieldName, fieldValue);
@@ -437,10 +437,12 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
     }
 
 
+    @Override
     public FilterTranslator<EduIdFilter> createFilterTranslator(ObjectClass objectClass, OperationOptions operationOptions) {
         return new EduIdFilterTranslator();
     }
 
+    @Override
     public void executeQuery(ObjectClass objectClass, EduIdFilter query, ResultsHandler handler, OperationOptions options) {
         try {
             LOG.info("executeQuery on {0}, query: {1}, options: {2}", objectClass, query, options);
@@ -477,16 +479,16 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         builder.setName(uid);
 
         for (String attribute : SINGLE_STRING_ATTRIBUTES){
-            getIfExists(affiliation, attribute, builder);
+            getStringIfExists(affiliation, attribute, builder);
         }
         for (String attribute : SINGLE_INT_ATTRIBUTES){
             getIntIfExists(affiliation, attribute, builder);
         }
         for (String attribute : MULTI_STRING_ATTRIBUTES){
-            getMultiIfExists(affiliation, attribute, builder);
+            getMultiStringIfExists(affiliation, attribute, builder);
         }
         for (String attribute : MULTI_INT_ATTRIBUTES){
-            getIntMultiIfExists(affiliation, attribute, builder);
+            getMultiIntIfExists(affiliation, attribute, builder);
         }
 
         ConnectorObject connectorObject = builder.build();
@@ -495,7 +497,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         return connectorObject;
     }
 
-    private void getIfExists(JSONObject object, String attrName, ConnectorObjectBuilder builder) {
+    private void getStringIfExists(JSONObject object, String attrName, ConnectorObjectBuilder builder) {
         if (object.has(attrName)) {
             if (object.get(attrName) != null && !JSONObject.NULL.equals(object.get(attrName))) {
                 addAttr(builder, attrName, object.getString(attrName));
@@ -511,7 +513,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         }
     }
 
-    private void getMultiIfExists(JSONObject object, String attrName, ConnectorObjectBuilder builder) {
+    private void getMultiStringIfExists(JSONObject object, String attrName, ConnectorObjectBuilder builder) {
         if (object.has(attrName)) {
             Object valueObject = object.get(attrName);
             if (object.get(attrName) != null && !JSONObject.NULL.equals(valueObject)) {
@@ -531,7 +533,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         }
     }
 
-    private void getIntMultiIfExists(JSONObject object, String attrName, ConnectorObjectBuilder builder) {
+    private void getMultiIntIfExists(JSONObject object, String attrName, ConnectorObjectBuilder builder) {
         if (object.has(attrName)) {
             Object valueObject = object.get(attrName);
             if (object.get(attrName) != null && !JSONObject.NULL.equals(valueObject)) {

@@ -175,7 +175,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         LOG.ok("response: {0}", response);
         processEduIdResponseErrors(response);
 
-        String result = EntityUtils.toString(response.getEntity());
+        String result = EntityUtils.toString(response.getEntity(), "UTF-8");
         LOG.ok("response body: {0}", result);
         closeResponse(response);
         return new JSONObject(result);
@@ -196,7 +196,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
             closeResponse(response);
             return null;
         }
-        String result = EntityUtils.toString(response.getEntity());
+        String result = EntityUtils.toString(response.getEntity(), "UTF-8");
         LOG.ok("response body: {0}", result);
         closeResponse(response);
         return new JSONObject(result);
@@ -230,7 +230,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         LOG.ok("response: {0}", response);
         processEduIdResponseErrors(response);
 
-        String result = EntityUtils.toString(response.getEntity());
+        String result = EntityUtils.toString(response.getEntity(), "UTF-8");
         LOG.ok("response body: {0}", result);
         closeResponse(response);
         return new JSONArray(result);
@@ -241,7 +241,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         if (statusCode == 409) {
             String result = null;
             try {
-                result = EntityUtils.toString(response.getEntity());
+                result = EntityUtils.toString(response.getEntity(), "UTF-8");
                 LOG.ok("Result body: {0}", result);
             } catch (IOException e) {
                 throw new ConnectorIOException("Error when trying to get response entity: "+response, e);
@@ -266,7 +266,7 @@ public class EduIdConnector extends AbstractRestConnector<EduIdConfiguration> im
         } else if (statusCode == 400) {
             String result = null;
             try {
-                result = EntityUtils.toString(response.getEntity());
+                result = EntityUtils.toString(response.getEntity(), "UTF-8");
                 LOG.ok("Result body: {0}", result);
             } catch (IOException e) {
                 throw new ConnectorIOException("Error when trying to get response entity: "+response, e);
